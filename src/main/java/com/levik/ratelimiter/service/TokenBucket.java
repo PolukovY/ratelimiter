@@ -7,7 +7,7 @@ public class TokenBucket {
     private static final int ONE_MINUTES_TO_MILLISECONDS = SECOND_IN_MINUTES * 1000;
 
     private final int maxBucketSizePerMinute;
-    private AtomicInteger currentBucketSize;
+    private final AtomicInteger currentBucketSize;
     private long lastRefillTimestamp;
 
     public TokenBucket(int maxBucketSizePerMinute) {
@@ -38,7 +38,7 @@ public class TokenBucket {
         if (timeElapsedSinceLastRefill >= ONE_MINUTES_TO_MILLISECONDS) {
             synchronized (this) {
                 if (timeElapsedSinceLastRefill >= ONE_MINUTES_TO_MILLISECONDS) {
-                    this.currentBucketSize = new AtomicInteger(maxBucketSizePerMinute);
+                    this.currentBucketSize.set(maxBucketSizePerMinute);
                     this.lastRefillTimestamp = System.currentTimeMillis();
                 }
             }

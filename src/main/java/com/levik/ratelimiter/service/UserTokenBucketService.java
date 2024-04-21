@@ -8,7 +8,6 @@ import java.util.Map;
 public class UserTokenBucketService {
 
     private final Map<String, TokenBucket> userTokenBucket;
-
     private final int maxBucketSizePerMinute;
 
     public boolean allowedRequest(String username) {
