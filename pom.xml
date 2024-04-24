@@ -11,7 +11,7 @@
 	<groupId>com.levik</groupId>
 	<artifactId>ratelimiter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ratelimiter</name>
+	<name>rateLimiter</name>
 	<description>Demo project for Spring Boot Rate Limiter</description>
 	<properties>
 		<java.version>17</java.version>
@@ -24,6 +24,28 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j-core</artifactId>
+			<version>8.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j-redis</artifactId>
+			<version>8.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+			<version>6.3.2.RELEASE</version>
 		</dependency>
 
 		<dependency>

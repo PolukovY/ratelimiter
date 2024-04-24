@@ -1,6 +1,8 @@
 package com.levik.ratelimiter.controller.filter;
 
+import com.levik.ratelimiter.redis.DistributedRateLimiterClient;
 import com.levik.ratelimiter.service.UserTokenBucketService;
+import io.github.bucket4j.ConsumptionProbe;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,21 +15,25 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    public static final String X_REAL_IP = "X-Real-IP";
+    public static final String X_FORWARDED_FOR = "X-Forwarded-For";
     public static final String RATE_LIMIT_EXCEEDED_TRY_LATER = "Rate limit exceeded. Try later...";
+    public static final String X_RATE_LIMIT_RETRY_AFTER_SECONDS = "X-Rate-Limit-Retry-After-Seconds";
 
     private final UserTokenBucketService userTokenBucketService;
+
+    private final DistributedRateLimiterClient distributedRateLimiterClient;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String remoteAddr = req.getHeader(X_REAL_IP);
+        String remoteAddr = req.getHeader(X_FORWARDED_FOR);
         String requestURI = req.getRequestURI();
 
         if (requestURI.contains("/login")) {
@@ -37,6 +43,20 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 filterChain.doFilter(req, res);
                 return;
             }
+        } else if (requestURI.contains("/forgotEmail")) {
+            //Will be using annotation approach for demo purpose
+            filterChain.doFilter(req, res);
+            return;
+        } else if (requestURI.contains("/notification")) {
+
+            var requestAllowed = distributedRateLimiterClient.isRequestAllowed(remoteAddr, 1);
+
+            if (requestAllowed.isConsumed()) {
+                filterChain.doFilter(req, res);
+                return;
+            }
+
+            res.setHeader(X_RATE_LIMIT_RETRY_AFTER_SECONDS, "" + TimeUnit.NANOSECONDS.toSeconds(requestAllowed.getNanosToWaitForRefill()));
         }
 
 

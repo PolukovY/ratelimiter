@@ -8,14 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.levik.ratelimiter.controller.filter.RateLimitFilter.X_REAL_IP;
+import static com.levik.ratelimiter.controller.filter.RateLimitFilter.X_FORWARDED_FOR;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/v1/api")
 public class LoginController {
-
 
     private final LoginUserStatisticService loginUserStatisticService;
 
@@ -23,7 +22,7 @@ public class LoginController {
     @RequestMapping("/login")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest,
-                                   @RequestHeader(required = false, name = X_REAL_IP) String ip) {
+                                   @RequestHeader(required = false, name = X_FORWARDED_FOR) String ip) {
         log.info("User {} call with ip {}", userLoginRequest, ip);
         loginUserStatisticService.add(userLoginRequest.username());
         return ResponseEntity.ok().build();
