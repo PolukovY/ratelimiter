@@ -2,7 +2,6 @@ package com.levik.ratelimiter.controller.filter;
 
 import com.levik.ratelimiter.redis.DistributedRateLimiterClient;
 import com.levik.ratelimiter.service.UserTokenBucketService;
-import io.github.bucket4j.ConsumptionProbe;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -8,7 +8,7 @@ public class TokenBucket {
 
     private final int maxBucketSizePerMinute;
     private final AtomicInteger currentBucketSize;
-    private long lastRefillTimestamp;
+    private volatile long lastRefillTimestamp;
 
     public TokenBucket(int maxBucketSizePerMinute) {
         this.maxBucketSizePerMinute = maxBucketSizePerMinute;
